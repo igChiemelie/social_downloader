@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Social Downloader</title>
+    <link rel="shortcut icon" href="./media/logo.png" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="./css/materialize.min.css">
     <link rel="stylesheet" href="./fonts/material-icons.css">
     <link rel="stylesheet" type="text/css" href="./css/jbTut.css">
@@ -62,8 +63,8 @@
     </div>
 
      <!-- Trigger Element (Button) -->
-     <a class="waves-effect waves-light btn open-tap-target">Open tap target</a>
-     <a class="waves-effect waves-light btn" onclick="$('.tap-target').tapTarget('close')">Close tap target</a>
+     <!-- <a class="waves-effect waves-light btn open-tap-target">Open tap target</a>
+     <a class="waves-effect waves-light btn" onclick="$('.tap-target').tapTarget('close')">Close tap target</a> -->
 
     <!-- Tap Target Structure -->
     <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
@@ -143,7 +144,7 @@
         <div class="footer-copyright">
             <div class="container">
                 <div class="center">
-                    <a class="grey-text text-lighten-4 center" href="#!">igc@gmail.com &copy; {{newDate}} - 2028
+                    <a class="grey-text text-lighten-4 center" href="mailto:ezehigc@gmail.com">ezehigc@gmail.com &copy; {{newDate}} - 2028
                         Copyright Text</a>
                 </div>
 
@@ -159,12 +160,14 @@
             window.scrollTo(0, 0);
         }
 
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     var elems = document.querySelectorAll('.tap-target');
-        //     var instances = M.TapTarget.init(elems, options);
-        // });
 
-      
+        window.onload = function() {
+            // Check if the URL contains the 'status=success' query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'success') {
+                alert('Downloaded successfully');
+            }
+        };
 
     </script>
 </body>

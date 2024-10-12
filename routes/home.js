@@ -344,7 +344,30 @@ router.get('/trigger-download', async (req, res) => {
 
         // Call the downloadFile function, passing in the download directory
         await downloadFile(url, downloadDir, format);
-        res.send('Download started! The file will be saved in your "downloads" folder.');
+        // res.send('Download started! The file will be saved in your "downloads" folder.');
+        // Send a message that download has started and include the client-side redirect logic
+        // Send a message using alert and include the client-side redirect logic
+        res.send(`
+            <html>
+            <head>
+                <title>Download Started</title>
+                <script>
+                    // Alert the user that the download has started
+                    alert('Download started! The file is being downloaded to your "downloads" folder.');
+
+                    // Redirect to home after 6 seconds
+                    window.location.href = '/?status=success';
+                    // setTimeout(function() {
+                    // }, 6000);
+                </script>
+            </head>
+            <body>
+                <!-- Optionally, you can include a loading spinner or message here -->
+            </body>
+            </html>
+        `);
+        // Redirect to home with success status
+        // res.redirect('/?status=success');
     } catch (error) {
         console.error('Error during download:', error.message);
         res.status(500).send(`Error downloading the file: ${error.message}`);
@@ -401,50 +424,53 @@ const downloadFile = async (url, downloadDir, format = '') => {
  
 
         // Download the file
-        // const response = await axios({
-        //     url,
-        //     method: 'GET',
-        //     responseType: 'stream', // Stream the file
-        // });
+        const response = await axios({
+            url,
+            method: 'GET',
+            responseType: 'stream', // Stream the file
+        });
 
-        // console.log('Response Status:', response.status);
+        console.log('Response Status:', response.status);
 
-        // if (response.status !== 200) {
-        //     throw new Error(`Failed to download file. HTTP status code: ${response.status}`);
-        // }
+        if (response.status !== 200) {
+            throw new Error(`Failed to download file. HTTP status code: ${response.status}`);
+        }
 
-        // // Create a write stream for the file
-        // const writer = fs.createWriteStream(filePath);
-        // console.log('Writing file to:', filePath);
+        // Create a write stream for the file
+        const writer = fs.createWriteStream(filePath);
+        console.log('Writing file to:', filePath);
 
-        // // Create a progress bar
-        // const progressBar = new ProgressBar('Downloading [:bar] :rate/bps :percent :etas', {
-        //     width: 40,
-        //     total: parseInt(totalSize),
-        //     complete: '=',
-        //     incomplete: ' ',
-        //     renderThrottle: 1000,
-        // });
+        // Create a progress bar
+        const progressBar = new ProgressBar('Downloading [:bar] :rate/bps :percent :etas', {
+            width: 40,
+            total: parseInt(totalSize),
+            complete: '=',
+            incomplete: ' ',
+            renderThrottle: 1000,
+        });
 
-        // // Update the progress bar as the file is being downloaded
-        // response.data.on('data', (chunk) => {
-        //     progressBar.tick(chunk.length);
-        // });
+        // Update the progress bar as the file is being downloaded
+        response.data.on('data', (chunk) => {
+            progressBar.tick(chunk.length);
+        });
 
-        // // Pipe the response data into the write stream
-        // response.data.pipe(writer);
+        // Pipe the response data into the write stream
+        response.data.pipe(writer);
 
-        // // Return a promise that resolves when the download is complete
-        // return new Promise((resolve, reject) => {
-        //     writer.on('finish', () => {
-        //         console.log('File downloaded successfully!');
-        //         resolve();
-        //     });
-        //     writer.on('error', (err) => {
-        //         console.error('File write error:', err.message);
-        //         reject(err);
-        //     });
-        // });
+        // Return a promise that resolves when the download is complete
+        return new Promise((resolve, reject) => {
+            writer.on('finish', () => {
+                console.log('File downloaded successfully!');
+                resolve();
+                
+            });
+            writer.on('error', (err) => {
+                console.error('File write error:', err.message);
+                reject(err);
+            });
+        });
+
+        
 
     } catch (error) {
         console.error('Error downloading the file:', error.message);
