@@ -357,8 +357,8 @@ router.get('/trigger-download', async (req, res) => {
 
                     // Redirect to home after 6 seconds
                     window.location.href = '/?status=success';
-                    // setTimeout(function() {
-                    // }, 6000);
+                    setTimeout(function() {
+                    }, 8000);
                 </script>
             </head>
             <body>
