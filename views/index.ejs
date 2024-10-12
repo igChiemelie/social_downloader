@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+     <% if (mediaTypes == "123") { %>
+        <p>
+            <%= mediaTypes %>
+        </p>
+    <% } %>
+
+    <% if (locals.error) { %>
+        <p>
+            <%= error %>
+        </p>
+    <% } %>
+
+    <div>
+        <h1>Social Downloader</h1>
+        <div>
+            <form action="/download" method="post">
+                <input type="text" name="url" id="" placeholder="Enter URL">
+
+                <button type="submit">
+                    Download
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <div>
+        <p>preview</p>
+    </div>
+</body>
+</html>

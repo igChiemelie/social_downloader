@@ -1,0 +1,6 @@
+npm i express body-parser mustache-express nodemon
+
+
+npm uninstall <package-name>
+
+npm uninstall downloads-folder

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Downloader</title>
+    <link rel="stylesheet" type="text/css" href="./css/materialize.min.css">
+    <link rel="stylesheet" href="./fonts/material-icons.css">
+    <link rel="stylesheet" type="text/css" href="./css/jbTut.css">
+
+</head>
+
+<body>
+
+    <div class="navbar-fixed">
+        <nav class="nav-extended navFeature">
+            <div class="nav-wrapper">
+                <a href="/" class="brand-logo">I.G_Codes</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <!-- <li><a href="/categories">Categories<i class="material-icons right">arrow_drop_down</i></a></li> -->
+                    <li><a href="#!">Categories<i class="material-icons right">arrow_drop_down</i></a></li>
+                    {{#login}}
+                    <li><a href="/dashboard">Dashboard<i class="material-icons right">contacts</i></a></li>
+                    <li><a href="#" class='dropdown-trigger' data-target='dropdown1'>{{user}}<i
+                                class="material-icons right">arrow_drop_down</i></a></li>
+                    {{/login}}
+                    {{^login}}
+                    <!-- <li><a class="" href="/gateway">Login</a></li> -->
+                    <li><a href="/gateway">Account<i class="material-icons right"></i></a></li>
+                    {{/login}}
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+
+    <div class="imgDiv">
+        <div class="secondImgDiv">
+            <div class="firstIndexTxtDiv">
+                <h1 class="h1Index center">Node App.🧠</h1>
+                <h3 class="h3Index center">Node Js: Npm express nodemon <br>what have you.🤷‍♂️😜😎👌</h3>
+            </div>
+            <div class="container">
+                <div class="collecDiv">
+                    {{#dbRows}}
+                    <ul class="collection with-header">
+                        <li class="collection-header" style="text-transform: capitalize;">
+                            <h4>{{category}}</h4>
+                        </li>
+                        <li class="collection-item">
+                            <a href="#" id="dataTitle" class="dataTitle" data-sigArtId="{{artId}}">{{title}}</a>
+                            <br>
+                            {{post}}
+                        </li>
+                    </ul>
+                    {{/dbRows}}
+                </div>
+                <input type="hidden" name="sigArtId" id="sigArtId">
+            </div>
+        </div>
+    </div>
+
+     <!-- Trigger Element (Button) -->
+     <a class="waves-effect waves-light btn open-tap-target">Open tap target</a>
+     <a class="waves-effect waves-light btn" onclick="$('.tap-target').tapTarget('close')">Close tap target</a>
+
+    <!-- Tap Target Structure -->
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a id="menu" class="btn btn-floating btn-large cyan">
+            <i class="material-icons">phone</i>
+        </a>
+    </div>
+    <div class="tap-target cyan" data-target="menu">
+        <div class="tap-target-content white-text">
+            <h5>I am here</h5>
+            <p class="white-text">Provide value and encourage return visits by introducing users to new features and
+                functionality at contextually relevant moments.</p>
+        </div>
+    </div>
+
+
+
+    <div class="container">
+        <div class="card grey">
+            <div class="card-content">
+                <h2 class="center">Social Download</h2>
+                <p class="center">Enter url to download your file 😍🤩👇</p>
+                {{#error}}
+                <p style="color: red;">{{error}}</p>
+                {{/error}}
+
+                <form action="/download" method="post">
+                    <div class="file-path-wrapper input-field">
+
+                        <input type="text" name="url" placeholder="Enter URL 👇">
+                        <button type="submit" class="btn btn-large" style="background-color: #d56930;">
+                            <a class="btn-floating  pulse"><i class="material-icons">cloud</i></a>
+                            Download
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- {{#url}}
+    <div>
+        <h1>Preview the Media</h1>
+
+        {{#isType}}
+            <img src="{{url}}" alt="Preview" width="500" />
+        {{/isType}}
+
+        {{#isTypeV}}
+            <video width="500" controls>
+                <source src="{{url}}" type="video/mp4">
+            </video>
+        {{/isTypeV}}
+
+        <p>Select a format:</p>
+        <ul>
+            <li><a href="/trigger-download?url={{url}}&format=480p">480p</a></li>
+            <li><a href="/trigger-download?url={{url}}&format=720p">720p</a></li>
+            <li><a href="/trigger-download?url={{url}}&format=1080p">1080p</a></li>
+        </ul>
+        <p><a href="/trigger-download?url={{url}}&format={{format}}">Download the file</a></p>
+    </div>
+    {{/url}} -->
+
+
+
+
+
+    <!-- Dropdown Structure -->
+    <ul id='dropdown1' class='dropdown-content'>
+        <li><a href="/logout">Log out</a></li>
+    </ul>
+
+    <footer class="page-footer">
+        <div class="footer-copyright">
+            <div class="container">
+                <div class="center">
+                    <a class="grey-text text-lighten-4 center" href="#!">igc@gmail.com &copy; {{newDate}} - 2028
+                        Copyright Text</a>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/jquery-3.4.1.min.js"></script>
+    <script src="./js/materialize.min.js"></script>
+    <script src="./js/jbTut.js"></script>
+    <script>
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0);
+        }
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     var elems = document.querySelectorAll('.tap-target');
+        //     var instances = M.TapTarget.init(elems, options);
+        // });
+
+      
+
+    </script>
+</body>
+
+</html>
