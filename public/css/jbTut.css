@@ -76,7 +76,8 @@ h2.artH2 {
     margin-top: 0;
 }
 
-div.imgDiv {
+/* div.imgDiv { */
+body {
     background: url('../media/wall_secondary.png');
     /* background: url('../media/img/bg.jpg'); */
     background-position: center;

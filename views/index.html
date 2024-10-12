@@ -9,6 +9,13 @@
     <link rel="stylesheet" type="text/css" href="./css/materialize.min.css">
     <link rel="stylesheet" href="./fonts/material-icons.css">
     <link rel="stylesheet" type="text/css" href="./css/jbTut.css">
+    <style>
+        .card-content{
+            box-shadow: 0 5px 20px #ffffff;
+            border-radius: 15px;
+            transition: filter 0.3s;
+        }
+    </style>
 
 </head>
 
@@ -83,10 +90,10 @@
 
 
     <div class="container">
-        <div class="card grey">
+        <div class="card" style="background-color: transparent; backdrop-filter: blur(2px);box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
             <div class="card-content">
-                <h2 class="center">Social Download</h2>
-                <p class="center">Enter url to download your file 😍🤩👇</p>
+                <h2 class="center white-text">Social Download</h2>
+                <p class="center white-text">Enter url to download your file 😍🤩👇</p>
                 {{#error}}
                 <p style="color: red;">{{error}}</p>
                 {{/error}}
