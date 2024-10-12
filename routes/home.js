@@ -59,8 +59,8 @@ router.post('/download', async (req, res) => {
     if (formUrl.startsWith("https://www.instagram.com/")) {
         data = await igdl(tempUrl);  // Fetch data using the Instagram downloader
         mapInstData(data);  // Map and process Instagram data
-
-    } else if (formUrl.startsWith("https://www.tiktok.com/") || formUrl.startsWith("https://tiktok.com/")) {
+        // https://vm.tiktok.com/ZMhUm551w/
+    } else if (formUrl.startsWith("https://www.tiktok.com/") || formUrl.startsWith("https://tiktok.com/") || formUrl.startsWith("https://vm.tiktok.com/")) {
         data = await ttdl(tempUrl);  // Fetch data using the TikTok downloader
         console.log(data);  // Log TikTok data (you can map it as needed)
         mapTData(data);  // Log TikTok data (you can map it as needed)
@@ -174,15 +174,7 @@ router.post('/download', async (req, res) => {
                 let mapUrl = url;
                 let thumbnail = thumbnailUrl;
 
-                
-                // return {
-                //     videoUrl: url,
-                //     thumbnail: thumbnailUrl,  // Add the thumbnail to the result
-                //     mediaType: 'video',
-                //     ext: ext,
-                //     format: 'mp4' // Assuming the format is 'mp4' based on the extension
-                // };
-
+             
 
                 try {
                     // Check if req and req.query are defined
@@ -317,6 +309,7 @@ router.post('/download', async (req, res) => {
 
 });
 
+
 // Route to trigger the download
 router.get('/trigger-download', async (req, res) => {
     const url = req.query.url; // URL of the media to download
@@ -331,50 +324,36 @@ router.get('/trigger-download', async (req, res) => {
     try {
         console.log('Starting download process...');
 
-        // Manually specify a download directory
-        // const downloadDir = path.join(__dirname, 'downloads');
-        const downloadDir = path.join(os.homedir(), 'Downloads');
+        // Call the downloadFile function, but stream the file directly to the client
+        // await downloadFile(req, res);
+        // await redirect(req, res);
+        const downloadSuccess = await downloadFile(req, res); // Wait for the download to finish
 
-        // Create the directory if it doesn't exist
-        if (!fs.existsSync(downloadDir)) {
-            fs.mkdirSync(downloadDir, { recursive: true });
+        if (downloadSuccess) {
+            // Only redirect if the download was successful
+            // res.redirect('/?status=success');
+            console.log('redirect to a new page');
+            // await redirect(req, res);
+
+            
+            // Adjust this path as needed
         }
 
-        console.log('Download directory:', downloadDir);
-
-        // Call the downloadFile function, passing in the download directory
-        await downloadFile(url, downloadDir, format);
-        // res.send('Download started! The file will be saved in your "downloads" folder.');
-        // Send a message that download has started and include the client-side redirect logic
-        // Send a message using alert and include the client-side redirect logic
-        res.send(`
-            <html>
-            <head>
-                <title>Download Started</title>
-                <script>
-                    // Alert the user that the download has started
-                    alert('Download started! The file is being downloaded to your "downloads" folder.');
-
-                    // Redirect to home after 6 seconds
-                    window.location.href = '/?status=success';
-                    // setTimeout(function() {
-                    // }, 6000);
-                </script>
-            </head>
-            <body>
-                <!-- Optionally, you can include a loading spinner or message here -->
-            </body>
-            </html>
-        `);
-        // Redirect to home with success status
-        // res.redirect('/?status=success');
+        // You can remove the client-side redirect logic since the file will be downloaded directly
+        // After download is complete, redirect to the completion route
+        // res.redirect('/download-complete'); // This will trigger the client-side notification after the download.
     } catch (error) {
         console.error('Error during download:', error.message);
         res.status(500).send(`Error downloading the file: ${error.message}`);
     }
 });
 
-const downloadFile = async (url, downloadDir, format = '') => {
+
+
+const downloadFile = async (req, res) => {
+    const url = req.query.url; // URL is passed as a query parameter
+    const format = req.query.format || ''; // Optional format parameter
+
     try {
         console.log(`Downloading from URL: ${url}`);
 
@@ -385,8 +364,8 @@ const downloadFile = async (url, downloadDir, format = '') => {
         const tokenParam = urlParams.get('token');
 
         if (tokenParam) {
-            // If there's a token, decode the token and extract the filename
-            const tokenDecoded = atob(tokenParam.split('.')[1]); // Base64 decode the token
+            // Decode token to get the filename
+            const tokenDecoded = Buffer.from(tokenParam.split('.')[1], 'base64').toString();
             const tokenJson = JSON.parse(tokenDecoded);
 
             if (!tokenJson.filename) {
@@ -394,16 +373,14 @@ const downloadFile = async (url, downloadDir, format = '') => {
             }
 
             fileName = tokenJson.filename;
-            ext = fileName.split('.').pop(); // Extract extension from token filename
+            ext = fileName.split('.').pop(); // Extract extension
         } else {
-            // If no token, extract the file extension directly from the URL
-            const urlPath = url.split('?')[0]; // Get the path without the query string
-            ext = urlPath.split('.').pop(); // Extract the file extension from the URL
+            const urlPath = url.split('?')[0];
+            ext = urlPath.split('.').pop(); // Extract extension from URL
             fileName = `downloaded_file${format ? `_${format}` : ''}.${ext}`;
         }
 
-        const filePath = path.join(downloadDir, fileName); // Create file path for saving
-        console.log(`File will be saved as: ${fileName}`);
+        console.log(`File will be served as: ${fileName}`);
 
         // Perform a HEAD request to get file size and content type
         const headResponse = await axios.head(url);
@@ -413,7 +390,7 @@ const downloadFile = async (url, downloadDir, format = '') => {
         console.log(`Content-Type: ${contentType}`);
         console.log(`File size: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
 
-        // Allow application/octet-stream if the file extension is valid
+        // Validate content type (image/video)
         const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mov', 'avi', 'webm', 'mkv'];
         const isValidMediaType = contentType.startsWith('image/') || contentType.startsWith('video/') || 
                                  (contentType === 'application/octet-stream' && validExtensions.includes(ext));
@@ -421,9 +398,12 @@ const downloadFile = async (url, downloadDir, format = '') => {
         if (!isValidMediaType) {
             throw new Error('The URL does not point to a valid image or video file.');
         }
- 
 
-        // Download the file
+        // Set the headers to force browser download
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Type', contentType);
+
+        // Download the file and stream it directly to the browser
         const response = await axios({
             url,
             method: 'GET',
@@ -436,10 +416,6 @@ const downloadFile = async (url, downloadDir, format = '') => {
             throw new Error(`Failed to download file. HTTP status code: ${response.status}`);
         }
 
-        // Create a write stream for the file
-        const writer = fs.createWriteStream(filePath);
-        console.log('Writing file to:', filePath);
-
         // Create a progress bar
         const progressBar = new ProgressBar('Downloading [:bar] :rate/bps :percent :etas', {
             width: 40,
@@ -449,33 +425,36 @@ const downloadFile = async (url, downloadDir, format = '') => {
             renderThrottle: 1000,
         });
 
-        // Update the progress bar as the file is being downloaded
+        // Update progress bar as the file is being downloaded
         response.data.on('data', (chunk) => {
             progressBar.tick(chunk.length);
         });
 
-        // Pipe the response data into the write stream
-        response.data.pipe(writer);
+        // Pipe the response data into the client's browser
+        response.data.pipe(res);
 
-        // Return a promise that resolves when the download is complete
-        return new Promise((resolve, reject) => {
-            writer.on('finish', () => {
-                console.log('File downloaded successfully!');
-                resolve();
-                
-            });
-            writer.on('error', (err) => {
-                console.error('File write error:', err.message);
-                reject(err);
+        response.data.on('end', () => {
+            console.log('File served to client successfully!');
+
+        });
+
+        return new Promise((resolve) => {
+            // Resolve the promise when the response is finished
+            res.on('finish', () => {
+                resolve(true);
             });
         });
 
-        
-
     } catch (error) {
         console.error('Error downloading the file:', error.message);
-        throw error;
+        res.status(500).send('Error downloading the file.');
     }
 };
+
+// const redirect = async (req, res) => {
+//     res.redirect('/?status=success');
+
+// }
+
 
 export default router;

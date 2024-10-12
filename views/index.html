@@ -66,7 +66,42 @@
                 </div>
                 <input type="hidden" name="sigArtId" id="sigArtId">
             </div>
+
+            <div class="container">
+                <div class="card" style="background-color: transparent; backdrop-filter: blur(3px);box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                    <div class="card-content">
+                        <h2 class="center white-text">Social Download</h2>
+                        <p class="center white-text">Enter url to download your file 😍🤩👇</p>
+                        {{#error}}
+                        <p style="color: red;">{{error}}</p>
+                        {{/error}}
+        
+                        <form action="/download" method="post">
+                            <div class="file-path-wrapper input-field">
+        
+                                <input type="text" class="white-text" name="url" placeholder="Enter URL 👇">
+                                <button type="submit" class="btn btn-large" style="background-color: #d56930;">
+                                    <a class="btn-floating  pulse"><i class="material-icons">cloud</i></a>
+                                    Download
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                
+            </div>
+        
         </div>
+    
+    </div>
+
+    <div style="padding-top: 2rem; padding-bottom: 10rem;">
+        <br>
+                <br>
+                <br>
+                <br>
+                <br>
     </div>
 
      <!-- Trigger Element (Button) -->
@@ -86,33 +121,6 @@
                 functionality at contextually relevant moments.</p>
         </div>
     </div>
-
-
-
-    <div class="container">
-        <div class="card" style="background-color: transparent; backdrop-filter: blur(2px);box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
-            <div class="card-content">
-                <h2 class="center white-text">Social Download</h2>
-                <p class="center white-text">Enter url to download your file 😍🤩👇</p>
-                {{#error}}
-                <p style="color: red;">{{error}}</p>
-                {{/error}}
-
-                <form action="/download" method="post">
-                    <div class="file-path-wrapper input-field">
-
-                        <input type="text" name="url" placeholder="Enter URL 👇">
-                        <button type="submit" class="btn btn-large" style="background-color: #d56930;">
-                            <a class="btn-floating  pulse"><i class="material-icons">cloud</i></a>
-                            Download
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
 
     <!-- {{#url}}
     <div>
